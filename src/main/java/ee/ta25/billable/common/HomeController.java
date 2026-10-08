@@ -17,4 +17,9 @@ public class HomeController {
         model.addAttribute("today", LocalDate.now(TALLINN));
         return "home";
     }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
 }
