@@ -10,14 +10,17 @@
 <body>
 
 <header class="container">
-    <nav>
-        <ul>
-            <li><strong>Billable</strong></li>
-        </ul>
-        <ul>
-            <li><a th:href="@{/}">Home</a></li>
-        </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><strong>Billable</strong></li>
+    </ul>
+
+    <ul>
+      <li><a th:href="@{/}">Home</a></li>
+      <li><a th:href="@{/clients}">Clients</a></li>
+      <li><a th:href="@{/about}">About</a></li>
+    </ul>
+  </nav>
 </header>
 
 <div class="container" th:if="${status}">
