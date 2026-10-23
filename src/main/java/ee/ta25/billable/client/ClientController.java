@@ -70,6 +70,39 @@ public class ClientController {
     return "redirect:/clients/" + client.getId();
   }
 
+  @GetMapping("/{id}/edit")
+  public String edit(@PathVariable long id, Model model) {
+    var client = findClient(id);
+    model.addAttribute("client", client);
+    model.addAttribute("form", ClientForm.from(client));
+    return "clients/edit";
+  }
+
+  @PostMapping("/{id}")
+  public String update(
+      @PathVariable long id,
+      @Valid @ModelAttribute("form") ClientForm form,
+      BindingResult bindingResult,
+      Model model,
+      RedirectAttributes redirectAttributes) {
+    var client = findClient(id);
+
+    if (form.getEmail() != null && clients.existsByEmailIgnoreCaseAndIdNot(form.getEmail(), id)) {
+      bindingResult.rejectValue(
+          "email", "duplicate", "This e-mail is already used by another client.");
+    }
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("client", client);
+      return "clients/edit";
+    }
+
+    client.update(form.getName(), form.getEmail(), form.getVatNumber());
+    clients.save(client);
+
+    redirectAttributes.addFlashAttribute("status", "Client updated.");
+    return "redirect:/clients/" + id;
+  }
+
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     Client client = findClient(id);
