@@ -103,6 +103,27 @@ public class ClientController {
     return "redirect:/clients/" + id;
   }
 
+  @PostMapping("/{id}/delete")
+  public String destroy(@PathVariable long id, RedirectAttributes redirectAttributes) {
+    var client = findClient(id);
+    long projectCount = projects.countByClientId(id);
+
+    if (projectCount > 0) {
+      redirectAttributes.addFlashAttribute(
+          "error",
+          client.getName()
+              + " still has "
+              + projectCount
+              + " project(s). Delete or archive them first.");
+      return "redirect:/clients/" + id;
+    }
+
+    clients.delete(client);
+
+    redirectAttributes.addFlashAttribute("status", "Client " + client.getName() + " deleted.");
+    return "redirect:/clients";
+  }
+
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     Client client = findClient(id);
